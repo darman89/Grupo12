@@ -12,9 +12,9 @@
     <link rel="icon" href="images/core-img/favicon.ico">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="stylesheets/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="stylesheets/dataTables.bootstrap4.min.css">
     {{#if dashboard}}
-        <link rel="stylesheet" href="stylesheets/jquery.dataTables.min.css">
-        <link rel="stylesheet" href="stylesheets/dataTables.bootstrap4.min.css">
         <link rel="stylesheet" href="stylesheets/daterangepicker.css">
     {{/if}}
 </head>
@@ -125,14 +125,14 @@
 <script src="javascripts/plugins/plugins.js"></script>
 <!-- Active javascripts -->
 <script src="javascripts/active.js"></script>
+<script src="javascripts/plugins/datatable.js"> </script>
+<script src="javascripts/plugins/dataTables.select.min.js"> </script>
+<script src="javascripts/plugins/dataTables.buttons.min.js"> </script>
+<script src="javascripts/plugins/dataTables.bootstrap4.min.js"> </script>
+<script src="javascripts/logic/dthome.js"> </script>
 
 {{#if dashboard}}
-    <script src="javascripts/plugins/datatable.js"> </script>
-    <script src="javascripts/plugins/dataTables.select.min.js"> </script>
-    <script src="javascripts/plugins/dataTables.buttons.min.js"> </script>
-    <script src="javascripts/plugins/dataTables.bootstrap4.min.js"> </script>
     <script src="javascripts/logic/dashboard.js"> </script>
-
 {{/if}}
 </body>
 </html>

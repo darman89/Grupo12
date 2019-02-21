@@ -125,6 +125,11 @@ router.post('/concurso/crear', ensureAuth, multer({storage: multer.memoryStorage
     });
 });
 
+// Datatable Home
+router.get("/concursos", (req, res) => {
+   res.json([]);
+});
+
 // Datatable dashboard
 router.get("/concurso/list", ensureAuth, (req, res) => {
     modelos.Concurso.findAll({
