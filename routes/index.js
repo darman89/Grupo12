@@ -82,15 +82,15 @@ router.get('/', function (req, res, next) {
 });
 
 /* GET home page. */
-router.get('/dashboard', /*ensureAuth,*/ function (req, res, next) {
+router.get('/dashboard', ensureAuth, function (req, res, next) {
     res.render('dashboard', {title: 'Concursos', user: req.userContext, dashboard: true});
 });
 
-router.get('/dashboard/crear', /*ensureAuth,*/ function (req, res, next) {
+router.get('/dashboard/crear', ensureAuth, function (req, res, next) {
     res.render('creacion', {layout: false});
 });
 
-router.post('/concurso/crear', /*ensureAuth,*/ multer({storage: multer.memoryStorage()}).single("imagen"), function (req, res) {
+router.post('/concurso/crear', ensureAuth, multer({storage: multer.memoryStorage()}).single("imagen"), function (req, res) {
     var ext = req.file.originalname.substring(req.file.originalname.lastIndexOf('.'));
     var nombre = crypto.randomBytes(20).toString('hex');
     var error = {error: 'No se ha podido crear el concurso!'};
@@ -126,7 +126,7 @@ router.post('/concurso/crear', /*ensureAuth,*/ multer({storage: multer.memorySto
 });
 
 // Datatable dashboard
-router.get("/concurso/list", /*ensureAuth,*/ (req, res) => {
+router.get("/concurso/list", ensureAuth, (req, res) => {
     modelos.Concurso.findAll({
         order: [['id', 'DESC']],
         attributes: ['id', 'nombre', 'fecha_inicio', 'fecha_final', 'valor', 'url_minio'],
@@ -153,12 +153,12 @@ router.get("/concurso/list", /*ensureAuth,*/ (req, res) => {
 });
 
 // Cargar Vista de eliminación de Concursos
-router.get("/concurso/eliminar", /*ensureAuth,*/ (req, res) => {
+router.get("/concurso/eliminar", ensureAuth, (req, res) => {
     return res.render("eliminar", {layout: false});
 });
 
 // Eliminar Concurso
-router.delete("/concurso/:id",/*ensureAuth,*/ (req, res) => {
+router.delete("/concurso/:id", ensureAuth, (req, res) => {
     //return res.send(req.params.id);
     modelos.Concurso.findOne({
         where: {
@@ -188,7 +188,7 @@ router.delete("/concurso/:id",/*ensureAuth,*/ (req, res) => {
 });
 
 // Cargar Vista de Concurso
-router.get("/concursos/:slug", /*ensureAuth,*/ (req, res) => {
+router.get("/concursos/:slug", (req, res) => {
 
 
     modelos.Concurso.findOne({
@@ -221,11 +221,12 @@ router.get("/concursos/:slug", /*ensureAuth,*/ (req, res) => {
 
 });
 
-// Cargar Vista de eliminación de Concursos
-router.get("/concurso/audio/:id_concurso", /*ensureAuth,*/ (req, res) => {
+// Cargar Vista para adjuntar audio
+router.get("/concurso/audio/:id_concurso", (req, res) => {
     return res.render("cargaaudio", {layout: false});
 });
 
+// Guardar Audio
 router.post('/concurso/audio/:id_concurso', /*ensureAuth,*/ multer({storage: multer.memoryStorage()}).single("audio"), function (req, res) {
     var ext = req.file.originalname.substring(req.file.originalname.lastIndexOf('.'));
     var nombre = crypto.randomBytes(20).toString('hex');
@@ -272,24 +273,25 @@ router.post('/concurso/audio/:id_concurso', /*ensureAuth,*/ multer({storage: mul
 
 });
 
-// Datatable dashboard
+// Datatable con voces subidas
 router.get("/voces/list/:id_concurso", /*ensureAuth,*/ (req, res) => {
     modelos.ConcursoVoces.findAll({
-        order: [['id', 'DESC']],
+        order: [['id_voz', 'DESC']],
         attributes: ['id_voz'],
         where: {
             id_concurso: req.params.id_concurso,
-        }
+        },
+        raw: true
     }).then(voces => {
         if (!voces) {
             return res.json([])
         } else {
-
             const getVozbyId = voz => {
                 return modelos.Voz.findOne({
+                    order: [['id', 'DESC']],
                     attributes: ['fecha_upload', 'nombre_completo', 'email', 'id_voz_convertida'],
                     where: {
-                        id: voz.id_voz,
+                        id: voz,
                         id_estado: 2
                     },
                     raw: true
@@ -297,28 +299,50 @@ router.get("/voces/list/:id_concurso", /*ensureAuth,*/ (req, res) => {
                     if (audio) {
                         return audio;
                     }
-
                 });
             };
+            let vocesData = [];
 
-            var vocesData = [];
-            async.eachSeries(voces, (voz) => {
-
-                voz = voz.get({plain: true});
-                let audio  = getVozbyId(voz).then(audio => {
-                    return audio
-                });
-
-                console.log(audio);
-
-            }, err => {
-                return res.json([]);
+            voces.forEach(function(voz) {
+                let promise  = getVozbyId(voz.id_voz);
+                vocesData.push(promise)
             });
 
-            return res.json(vocesData)
+            Promise.all(vocesData).then(function(result){
+                var response = [];
+                result.forEach(function(voz) {
+                    response.push({
+                        f0: moment(voz.fecha_upload).format('DD/MM/YYYY hh:mm A'),
+                        f1: voz.nombre_completo,
+                        f2: voz.email,
+                        f3: req.protocol + '://' + req.get('host') + '/voz/audio/' + voz.id_voz_convertida
+                    });
+                });
+                return res.send(response);
+            })
+        }
+    })
+
+});
+
+// Cargar Audio
+router.get("/voz/audio/:id", (req, res) => {
+    modelos.ArchivoVoz.findOne({
+        attributes: ['url_repo'],
+        where: {
+            id: req.params.id
+        }
+    }).then(audio => {
+        if (!audio) {
+            return res.json({error: 'No se ha encontrado el audio en la base de datos!'})
         }
 
-    })
+        minioClient.presignedUrl('GET', `${process.env.MINIO_BUCKET_AUDIO}`, audio.url_repo, 60 * 60, function (err, presignedUrl) {
+            if (err) return console.log(err)
+            res.render('player', {layout: false, url: presignedUrl});
+        })
+
+    });
 
 });
 

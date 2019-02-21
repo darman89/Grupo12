@@ -56,12 +56,14 @@
                         <!-- Nav Start -->
                         <div class="classynav">
 
-                            {{#if user.userinfo.sub}}
+
                                 <ul>
                                     <li><a href="/">Inicio</a></li>
+                                    {{#if user.userinfo.sub}}
                                     <li><a href="dashboard">Concursos</a></li>
+                                    {{/if}}
                                 </ul>
-                            {{/if}}
+
 
                             <!-- Login/Register & Cart Button -->
                             <div class="login-register-cart-button d-flex align-items-center">

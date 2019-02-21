@@ -2,6 +2,7 @@
     'use strict';
     $(document).ready(function () {
 
+        var container = $('#audioModalContainer');
         var table = $('#audio-concursos').DataTable({
             ajax: {
                 url: $('meta[name="referer"]').attr("content"),
@@ -19,7 +20,8 @@
             columns: [
                 {data: 'f0'},
                 {data: 'f1'},
-                {data: 'f2'}
+                {data: 'f2'},
+                {data: 'f3'}
             ],
             dom: "<'row'<'col-sm-12 col-md-12 text-right py-4'B>><'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
@@ -75,24 +77,27 @@
                         e.stopImmediatePropagation();
                         e.preventDefault();
                         var row = dt.rows({selected: true}).data()[0];
-                        window.open(row.f4);
+                        $.ajax({
+                            url:row.f3,
+                            type: 'GET',
+                            success: function (result) {
+                                $.when(container.html(result)).then(function(){
+                                    $('#audioModal').on('hidden.bs.modal', function () {
+                                        $('#audioModalContainer').html('');
+                                    });
 
-                    }
-                },
-                {
-                    extend: 'selected',
-                    className: 'btn  btn-success',
-                    text: '<span class="bold">Descargar</span>',
-                    action: function (e, dt) {
-                        e.stopImmediatePropagation();
-                        e.preventDefault();
-                        var row = dt.rows({selected: true}).data()[0];
-                        window.open(row.f4);
-
+                                    if ($.fn.audioPlayer) {
+                                        $('audio').audioPlayer();
+                                    }
+                                    $('#audioModal').modal('show');
+                                });
+                            }
+                        });
                     }
                 }
             ]
         });
+
 
     })
 })(window.jQuery);
