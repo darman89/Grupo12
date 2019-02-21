@@ -1,0 +1,56 @@
+<form id="form-audio" action="#" method="post">
+    <div id="crearModal" class="modal fade bd-example-modal-lg" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Envío de voz al concurso</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Por favor ingrese los datos que se solicitan a continuación:</p>
+                    <div class="col-md-12">
+                        <div class="contact-form-area">
+
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre Completo" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" id="email" name="email"
+                                               placeholder="Email" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="pic">Audio del Concurso</label>
+                                        <input type="file" id="audio" name="audio" accept="audio/*"
+                                               class="btn-group-sm" required>
+
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <textarea name="observacion" class="form-control" id="observacion" cols="30" rows="10"
+                                                  placeholder="Observaciones" style="height: 70px;" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="crearaudio" type="submit" class="btn btn-primary">Subir Voz</button>
+                    <button id="cancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

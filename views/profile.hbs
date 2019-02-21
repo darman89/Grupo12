@@ -1,0 +1,120 @@
+<section class="breadcumb-area bg-img bg-overlay" style="background-image: url('{{back}}');">
+    <div class="bradcumbContent">
+        <p >Concursos</p>
+        <h2 id="concurso">{{concurso.nombre}}</h2>
+    </div>
+</section>
+<section class="elements-area mt-50">
+    <div class="container">
+
+            <div class="our-skills-area">
+                <div class="row">
+
+                    <!-- Single Skills Area -->
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="single-skils-area mb-100">
+                            <div id="circle" class="circle" data-value="1">
+                                <div class="skills-text">
+                                    <span>{{fecha_inicio}}</span>
+                                    <p>Fecha de Inicio</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Single Skills Area -->
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="single-skils-area mb-100">
+                            <div id="circle2" class="circle" data-value="1">
+                                <div class="skills-text">
+                                    <span>{{fecha_final}}</span>
+                                    <p>Fecha de Finalización</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Single Skills Area -->
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="single-skils-area mb-100">
+                            <div id="circle3" class="circle" data-value="1">
+                                <div class="skills-text">
+                                    <span>{{concurso.valor}}</span>
+                                    <p>Premio al Ganador</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Single Skills Area -->
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="single-skils-area mb-100">
+                            <div id="circle4" class="circle" data-value="1">
+                                <div class="skills-text">
+                                    <a id="carga_audio" href="{{uri}}"><span><i class="icon-play-button text-success font-bold"></i></span></a>
+                                    <p>Participa!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+            <!-- Single Service Area -->
+            <div class="col-12 col-md-6">
+                <div class="single-service-area d-flex flex-wrap mb-100">
+                    <div class="icon">
+                        <span class="icon-favorites"></span>
+                    </div>
+                    <div class="text">
+                        <h5>Guión</h5>
+                        <p>{{concurso.guion}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Single Service Area -->
+            <div class="col-12 col-md-6">
+                <div class="single-service-area d-flex flex-wrap mb-100">
+                    <div class="icon">
+                        <span class="icon-microphone"></span>
+                    </div>
+                    <div class="text">
+                        <h5>Recomendaciones</h5>
+                        <p>{{concurso.recomendaciones}}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-12">
+            <div class="row">
+
+                <!-- Single Service Area -->
+                <div class="col-12 col-md-12">
+                    <div class="single-service-area  flex-wrap mb-50">
+                        <table id="audio-concursos" class="display" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th>Fecha Subida</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Uri</th>
+                            </tr>
+                            </thead>
+                            <tbody style="cursor: pointer;">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div id="audioModal" class="row"></div>
+</section>
+

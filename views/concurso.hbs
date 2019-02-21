@@ -1,0 +1,141 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="referer" content="{{referer}}">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <!-- Title -->
+    <title>{{title}}</title>
+    <!-- Favicon -->
+    <link rel="icon" href="../images/core-img/favicon.ico">
+    <!-- Stylesheet -->
+    {{#if dashboard}}
+        <link rel="stylesheet" href="../stylesheets/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="../stylesheets/dataTables.bootstrap4.min.css">
+    {{/if}}
+    <link rel="stylesheet" href="../stylesheets/style.css">
+</head>
+
+<body>
+<!-- Preloader -->
+<div class="preloader d-flex align-items-center justify-content-center">
+    <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+<header class="header-area">
+    <!-- Navbar Area -->
+    <div class="oneMusic-main-menu">
+        <div class="classy-nav-container breakpoint-off">
+            <div class="container">
+                <!-- Menu -->
+                <nav class="classy-navbar justify-content-between" id="oneMusicNav">
+
+                    <!-- Nav brand -->
+                    <a href="index.html" class="nav-brand"></a>
+
+                    <!-- Navbar Toggler -->
+                    <div class="classy-navbar-toggler">
+                        <span class="navbarToggler"><span></span><span></span><span></span></span>
+                    </div>
+
+                    <!-- Menu -->
+                    <div class="classy-menu">
+
+                        <!-- Close Button -->
+                        <div class="classycloseIcon">
+                            <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                        </div>
+
+                        <!-- Nav Start -->
+                        <div class="classynav">
+
+                            {{#if user.userinfo.sub}}
+                                <ul>
+                                    <li><a href="/">Inicio</a></li>
+                                    <li><a href="dashboard">Concursos</a></li>
+                                </ul>
+                            {{/if}}
+
+                            <!-- Login/Register & Cart Button -->
+                            <div class="login-register-cart-button d-flex align-items-center">
+                                <!-- Login/Register -->
+                                {{#if user.userinfo.sub}}
+                                    <div class="login-register-btn mr-50">
+                                        <a href="/users/logout" id="loginBtn"><span
+                                                class="icon-user-3"></span> {{user.userinfo.given_name}} (Salir)</a>
+                                    </div>
+                                {{else}}
+                                    <div class="login-register-btn mr-50">
+                                        <a href="/login" id="loginBtn"><span class="icon-padlock"></span> Ingreso /
+                                            Registro</a>
+                                    </div>
+                                {{/if}}
+
+                            </div>
+                        </div>
+                        <!-- Nav End -->
+
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+{{{body}}}
+<footer class="footer-area">
+    <div class="container">
+        <div class="row d-flex flex-wrap align-items-center">
+            <div class="col-12 col-md-6">
+                <a href="#"></a>
+                <p class="copywrite-text"><a href="#">
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+                    All rights reserved | This template is made with <i class="fa fa-heart-o"
+                                                                        aria-hidden="true"></i> by
+                    <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="footer-nav">
+                    {{#if user.userinfo.sub}}
+                        <ul>
+                            <li><a href="/">Inicio</a></li>
+                            <li><a href="dashboard">Concursos</a></li>
+                        </ul>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- jQuery-2.2.4 js -->
+<script src="../javascripts/jquery/jquery-2.2.4.min.js"></script>
+<!-- Popper js -->
+<script src="../javascripts/bootstrap/popper.min.js"></script>
+<!-- Bootstrap js -->
+<script src="../javascripts/bootstrap/bootstrap.min.js"></script>
+<!-- All Plugins js -->
+<script src="../javascripts/plugins/plugins.js"></script>
+<!-- Active javascripts -->
+<script src="../javascripts/active.js"></script>
+
+{{#if dashboard}}
+    <script src="../../javascripts/plugins/datatable.js"> </script>
+    <script src="../../javascripts/plugins/dataTables.select.min.js"> </script>
+    <script src="../../javascripts/plugins/dataTables.buttons.min.js"> </script>
+    <script src="../../javascripts/plugins/dataTables.bootstrap4.min.js"> </script>
+    <script src="../../javascripts/plugins/jquery.validate.min.js"><{{!}}/script>
+    <script src="../../javascripts/plugins/messages_es.min.js"><{{!}}/script>
+    <script src="../../javascripts/logic/audio.js"><{{!}}/script>
+    <script src="../../javascripts/logic/audio-datatable.js"><{{!}}/script>
+{{/if}}
+</body>
+</html>
