@@ -78,7 +78,7 @@ function guardarConcurso(id_usuario, nombre, id_banner, url, url_minio, fecha_in
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render('index', {title: 'Voices', user: req.userContext});
+    res.render('index', {title: 'SuperVoices', user: req.userContext});
 });
 
 /* GET home page. */
@@ -102,7 +102,7 @@ router.post('/concurso/crear', ensureAuth, multer({storage: multer.memoryStorage
         guardarImagen(nombre + ext, req.file.originalname, req.file.size, ext, function (record) {
             if (record.id > 0) {
                 guardarConcurso(
-                    '00uj1vwdb6m8EAVMi0h7'/*req.userContext.userinfo.sub*/,
+                    req.userContext.userinfo.sub,
                     req.body.nombre,
                     record.id, req.body.url_evento,
                     req.body.url_total,
@@ -131,7 +131,7 @@ router.get("/concurso/list", ensureAuth, (req, res) => {
         order: [['id', 'DESC']],
         attributes: ['id', 'nombre', 'fecha_inicio', 'fecha_final', 'valor', 'url_minio'],
         where: {
-            id_usuario: '00uj1vwdb6m8EAVMi0h7' //req.userContext.userinfo.sub
+            id_usuario: req.userContext.userinfo.sub
         }
     }).then(concursos => {
         let concursoData = [];
@@ -163,7 +163,7 @@ router.delete("/concurso/:id", ensureAuth, (req, res) => {
     modelos.Concurso.findOne({
         where: {
             id: req.params.id,
-            id_usuario: '00uj1vwdb6m8EAVMi0h7' //req.userContext.userinfo.sub
+            id_usuario: req.userContext.userinfo.sub
         },
         include: ['imagen']
     }).then(concurso => {
