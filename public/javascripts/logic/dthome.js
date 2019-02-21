@@ -53,13 +53,13 @@
                     'targets': [1, 2, 3],
                     'width': "20%",
                     'searchable': true,
-                    'class': "fs-13 text-left"
+                    'class': "fs-13 text-center"
                 },
                 {
                     'targets': [0],
                     'width': "40%",
                     'searchable': true,
-                    'class': "fs-13 text-center text-capitalize"
+                    'class': "fs-13 text-left text-capitalize"
                 },
                 {
                     'targets': [4],
@@ -77,7 +77,7 @@
                         e.stopImmediatePropagation();
                         e.preventDefault();
                         var row = dt.rows({selected: true}).data()[0];
-                        console.log(row)
+                        window.open(row.f4);
                     }
                 }
             ]

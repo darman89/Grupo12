@@ -127,7 +127,26 @@ router.post('/concurso/crear', ensureAuth, multer({storage: multer.memoryStorage
 
 // Datatable Home
 router.get("/concursos", (req, res) => {
-   res.json([]);
+    modelos.Concurso.findAll({
+        order: [['id', 'DESC']],
+        attributes: ['id', 'nombre', 'fecha_inicio', 'fecha_final', 'valor', 'url_minio'],
+    }).then(concursos => {
+        let concursoData = [];
+        async.eachSeries(concursos, (concurso, callback) => {
+            concurso = concurso.get({plain: true});
+            concursoData.push({
+                f0: concurso.nombre,
+                f1: moment(concurso.fecha_inicio).format('DD/MM/YYYY hh:mm A'),
+                f2: moment(concurso.fecha_final).format('DD/MM/YYYY hh:mm A'),
+                f3: concurso.valor,
+                f4: decodeURIComponent(concurso.url_minio),
+            });
+        }, err => {
+            return res.send(concursoData);
+        });
+
+        return res.send(concursoData);
+    });
 });
 
 // Datatable dashboard

@@ -1,7 +1,7 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        var container = $('#audioModal');
+        var container = $('#audioModalContainer');
 
         $('#circle4').on('click', '#carga_audio', function (e) {
             e.preventDefault();
