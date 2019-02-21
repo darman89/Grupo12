@@ -238,7 +238,8 @@ router.get("/concursos/:slug", (req, res) => {
                 title: 'Concurso - ' + concurso.nombre,
                 layout: 'concurso',
                 fecha_inicio: moment(concurso.fecha_inicio).format('DD/MM/YYYY hh:mm A'),
-                fecha_final: moment(concurso.fecha_final).format('DD/MM/YYYY hh:mm A')
+                fecha_final: moment(concurso.fecha_final).format('DD/MM/YYYY hh:mm A'),
+                user: req.userContext
             });
         });
     });
