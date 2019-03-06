@@ -69,9 +69,17 @@
             },
             submitHandler: function() {
                 var drp = $('input[name="fecha"]').data('daterangepicker');
-
                 var fd = new FormData();
                 var files = $('#imagen')[0].files[0];
+                var button_crear = container.find('#crearevento');
+
+                var loadingText = '<i class="fa fa-circle-o-notch fa-spin"></i> Cargando...';
+                if (button_crear.html() !== loadingText) {
+                    button_crear.data('original-text', button_crear.html());
+                    button_crear.html(loadingText);
+                }
+
+                button_crear.prop('disabled', true);
 
                 fd.append('imagen', files);
                 fd.append('nombre', $('#name').val());
