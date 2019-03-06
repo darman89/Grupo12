@@ -119,25 +119,29 @@
     </div>
 </footer>
 <!-- jQuery-2.2.4 js -->
-<script src="../javascripts/jquery/jquery-2.2.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <!-- Popper js -->
-<script src="../javascripts/bootstrap/popper.min.js"></script>
-<!-- Bootstrap js -->
-<script src="../javascripts/bootstrap/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <!-- All Plugins js -->
-<script src="../javascripts/plugins/plugins.js"></script>
+<script src="../../javascripts/plugins/plugins.js"></script>
 <!-- Active javascripts -->
-<script src="../javascripts/active.js"></script>
+<script src="../../javascripts/active.js"></script>
 
 {{#if dashboard}}
-    <script src="../../javascripts/plugins/datatable.js"> </script>
-    <script src="../../javascripts/plugins/dataTables.select.min.js"> </script>
-    <script src="../../javascripts/plugins/dataTables.buttons.min.js"> </script>
-    <script src="../../javascripts/plugins/dataTables.bootstrap4.min.js"> </script>
-    <script src="../../javascripts/plugins/jquery.validate.min.js"><{{!}}/script>
-    <script src="../../javascripts/plugins/messages_es.min.js"><{{!}}/script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"> </script>
+    <script src="https://cdn.datatables.net/select/1.2.6/js/dataTables.select.min.js"> </script>
+    <script src="https://cdn.datatables.net/buttons/1.5.4/js/dataTables.buttons.min.js"> </script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"><{{!}}/script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/localization/messages_es.js"><{{!}}/script>
     <script src="../../javascripts/logic/audio.js"><{{!}}/script>
-    <script src="../../javascripts/logic/audio-datatable.js"><{{!}}/script>
+
+{{/if}}
+{{#if admin}}
+    <script src="../../javascripts/logic/audio-adm-datatable.js"><{{!}}/script>
+{{else}}
+<script src="../../javascripts/logic/audio-datatable.js"><{{!}}/script>
 {{/if}}
 </body>
 </html>

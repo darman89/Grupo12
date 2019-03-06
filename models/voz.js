@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'Voces'
   });
   Voz.associate = function(models) {
-    Voz.belongsTo(models.Estado, {foreignKey: 'id_estado', targetKey: 'id', as: 'imagen'});
+    Voz.belongsTo(models.Estado, {foreignKey: 'id_estado', targetKey: 'id', as: 'estado'});
     Voz.belongsTo(models.ArchivoVoz, {foreignKey: 'id_voz_original', targetKey: 'id', as: 'voz_original', onDelete: 'CASCADE',  hooks: true});
     Voz.belongsTo(models.ArchivoVoz, {foreignKey: 'id_voz_convertida', targetKey: 'id', as: 'voz_convertida', onDelete: 'CASCADE',  hooks: true});
     Voz.belongsToMany(models.Concurso, { through: { model: models.ConcursoVoces, unique: false }, foreignKey: 'id_concurso' });
