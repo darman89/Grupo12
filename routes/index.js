@@ -359,7 +359,7 @@ router.get("/voces/list/:id_concurso", (req, res) => {
 
 // Cargar Audio
 router.get("/voz/audio/:id", (req, res) => {
-    if(req.params.id !== null){
+    if(req.params.id !== 'null'){
         modelos.ArchivoVoz.findOne({
             attributes: ['url_repo'],
             where: {
