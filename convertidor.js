@@ -75,7 +75,7 @@ module.exports = {
                                         }).then(() => {
                                             var data = {
                                                 //Specify email data
-                                                from: 'supervoices@mgsend.net',
+                                                from: 'Supervoices <supervoices@mgsend.net>',
                                                 //The email to contact
                                                 to: job.data.email,
                                                 //Subject and text data
