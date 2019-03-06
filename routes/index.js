@@ -359,23 +359,26 @@ router.get("/voces/list/:id_concurso", (req, res) => {
 
 // Cargar Audio
 router.get("/voz/audio/:id", (req, res) => {
-    modelos.ArchivoVoz.findOne({
-        attributes: ['url_repo'],
-        where: {
-            id: req.params.id
-        }
-    }).then(audio => {
-        if (!audio) {
-            return res.json({error: 'No se ha encontrado el audio en la base de datos!'})
-        } else {
-            minioClient.presignedUrl('GET', `${process.env.MINIO_BUCKET_AUDIO_CONVERTIDO}`, audio.url_repo, 60 * 60, function (err, presignedUrl) {
-                if (err) return console.log(err)
-                res.render('player', {layout: false, url: presignedUrl});
-            })
+    if(req.params.id !== null){
+        modelos.ArchivoVoz.findOne({
+            attributes: ['url_repo'],
+            where: {
+                id: req.params.id
+            }
+        }).then(audio => {
+            if (!audio) {
+                return res.json({error: 'No se ha encontrado el audio en la base de datos!'})
+            } else {
+                minioClient.presignedUrl('GET', `${process.env.MINIO_BUCKET_AUDIO_CONVERTIDO}`, audio.url_repo, 60 * 60, function (err, presignedUrl) {
+                    if (err) return console.log(err)
+                    res.render('player', {layout: false, url: presignedUrl});
+                })
 
-        }
-    });
-
+            }
+        });
+    }else{
+        res.render('player_none', {layout: false});
+    }
 });
 
 // Datatable con voces subidas
