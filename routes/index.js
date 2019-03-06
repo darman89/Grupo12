@@ -396,8 +396,7 @@ router.get("/adm/voces/list/:id_concurso", ensureAuth, (req, res) => {
                     order: [['id', 'DESC']],
                     attributes: ['fecha_upload', 'nombre_completo', 'email', 'id_voz_convertida', 'id_voz_original'],
                     where: {
-                        id: voz,
-                        id_estado: 2
+                        id: voz
                     },
                     include: ['estado'],
                     raw: true
