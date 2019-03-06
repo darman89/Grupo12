@@ -257,7 +257,7 @@ router.get("/concurso/audio/:id_concurso", (req, res) => {
 });
 
 // Guardar Audio
-router.post('/concurso/audio/:id_concurso', ensureAuth, multer({storage: multer.memoryStorage()}).single("audio"), function (req, res) {
+router.post('/concurso/audio/:id_concurso', multer({storage: multer.memoryStorage()}).single("audio"), function (req, res) {
     var ext = req.file.originalname.substring(req.file.originalname.lastIndexOf('.'));
     var nombre = crypto.randomBytes(20).toString('hex');
 
@@ -283,7 +283,7 @@ router.post('/concurso/audio/:id_concurso', ensureAuth, multer({storage: multer.
                             }).then(newConcursoVoces => {
                                 if (newConcursoVoces) {
                                     var audioQueue = req.app.get('audioQueue');
-                                    audioQueue.add({audio: nombre + ext, voz: voz.id, email: voz.email, concurso: concurso.nombre, url_minio: decodeURIComponent(concurso.url_minio)});
+                                    audioQueue.add({audio: nombre + ext, voz: voz.id, email: voz.email, usuario: voz.nombre_completo, concurso: concurso.nombre, url_minio: decodeURIComponent(concurso.url_minio)});
                                     return res.status(200).json({message: "Hemos recibido tu voz y la estamos procesando para que sea publicada en la página del concurso y pueda ser posteriormente revisada por nuestro equipo de trabajo. Tan pronto la voz quede publicada en la página del concurso te notificaremos por email"});
                                 } else {
                                     return res.status(400).json({error: 'No se ha podido subir la voz!'})

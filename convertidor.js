@@ -80,7 +80,7 @@ module.exports = {
                                                 to: job.data.email,
                                                 //Subject and text data
                                                 subject: 'Hola desde Supervoices',
-                                                html: 'Hola!, tu voz ya está disponible en el concurso  <a href="'+job.data.url_minio+'"><strong>'+job.data.concurso+'</strong></a>'
+                                                html: 'Hola '+job.data.usuario+'!, tu voz ya está disponible en el concurso  <a href="'+job.data.url_minio+'"><strong>'+job.data.concurso+'</strong></a>'
                                             };
 
                                             mailgun.messages().send(data, function (err, body) {
