@@ -27,6 +27,16 @@
                                 var fd = new FormData();
                                 var files = $('#audio')[0].files[0];
 
+                                var button_crear = container.find('#crearaudio');
+
+                                var loadingText = '<i class="fa fa-circle-o-notch fa-spin"></i> Cargando...';
+                                if (button_crear.html() !== loadingText) {
+                                    button_crear.data('original-text', button_crear.html());
+                                    button_crear.html(loadingText);
+                                }
+
+                                button_crear.prop('disabled', true);
+
                                 fd.append('audio', files);
                                 fd.append('nombre', $('#nombre').val());
                                 fd.append('email', $('#email').val());
