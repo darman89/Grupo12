@@ -90,6 +90,65 @@ router.get('/dashboard/crear', ensureAuth, function (req, res, next) {
     res.render('creacion', {layout: false});
 });
 
+
+router.get('/actualizar/:id', ensureAuth, function (req, res, next) {
+
+    modelos.Concurso.findOne({
+        where: {
+            id: req.params.id,
+            id_usuario: req.userContext.userinfo.sub,
+        }
+    }).then(concurso => {
+        let concursoData = [];
+        if (!concurso) {
+            return res.status(400).json({error: 'No se ha encontrado el concurso en la base de datos!'})
+        }else{
+            concursoData.push({
+                f0: concurso.nombre,
+                f1: moment(concurso.fecha_inicio).utcOffset('-0500').format('DD/MM/YYYY hh:mm A'),
+                f2: moment(concurso.fecha_final).utcOffset('-0500').format('DD/MM/YYYY hh:mm A'),
+                f3: concurso.valor,
+                f4: decodeURIComponent(concurso.url_minio),
+                f5: concurso.url,
+                f6: concurso.guion,
+                f7: concurso.recomendaciones,
+                f8: req.protocol + '://' + req.get('host') + '/actualizar/' + concurso.id
+            });
+            res.render('actualizacion', {layout: false, concurso: concursoData[0]});
+        }
+    });
+});
+
+router.put('/actualizar/:id', ensureAuth, function (req, res, next) {
+    modelos.Concurso.findOne({
+        where: {
+            id: req.params.id,
+            id_usuario: req.userContext.userinfo.sub,
+        }
+    }).then(concurso => {
+        if (!concurso) {
+            return res.status(400).json({ error: 'No se ha podido actualizar el evento!' })
+        }else{
+            concurso.update({
+                id_usuario: req.userContext.userinfo.sub,
+                nombre: req.body.nombre,
+                url: req.body.url_evento,
+                url_minio: encodeURIComponent(req.body.url_total),
+                fecha_inicio: req.body.finicio,
+                fecha_final: req.body.ffinal,
+                valor: req.body.valor,
+                guion: req.body.guion,
+                recomendaciones: req.body.recomendaciones
+            }).then(concurso => {
+                console.log(concurso);
+                return res.send({ message: 'El Concurso ha sido actualizado con éxito!' });
+            });
+        }
+
+    });
+
+});
+
 router.post('/concurso/crear', ensureAuth, multer({storage: multer.memoryStorage()}).single("imagen"), function (req, res) {
     var ext = req.file.originalname.substring(req.file.originalname.lastIndexOf('.'));
     var nombre = crypto.randomBytes(20).toString('hex');
@@ -166,7 +225,8 @@ router.get("/concurso/list", ensureAuth, (req, res) => {
                 f2: moment(concurso.fecha_final).utcOffset('-0500').format('DD/MM/YYYY hh:mm A'),
                 f3: concurso.valor,
                 f4: decodeURIComponent(concurso.url_minio),
-                f5: req.protocol + '://' + req.get('host') + '/concurso/' + concurso.id
+                f5: req.protocol + '://' + req.get('host') + '/concurso/' + concurso.id,
+                f6: req.protocol + '://' + req.get('host') + '/actualizar/' + concurso.id
             });
             callback();
         }, err => {
@@ -232,7 +292,7 @@ router.get("/concursos/:slug", (req, res) => {
 
         minioClient.presignedUrl('GET', `${process.env.MINIO_BUCKET_IMAGE}`, concurso.imagen.url_minio, 60 * 60, function (err, presignedUrl) {
             if (err) return console.log(err);
-            $user_null = typeof req.userContext === 'undefined';
+            let $user_null = typeof req.userContext === 'undefined';
             res.render('profile', {
                 dashboard: true,
                 referer: $user_null ? req.protocol + '://' + req.get('host') + '/voces/list/' + concurso.id : req.protocol + '://' + req.get('host') + '/adm/voces/list/' + concurso.id,
@@ -381,7 +441,7 @@ router.get("/voz/audio/:id", (req, res) => {
     }
 });
 
-// Datatable con voces subidas
+// Datatable con voces subidas (administrativo)
 router.get("/adm/voces/list/:id_concurso", ensureAuth, (req, res) => {
     modelos.ConcursoVoces.findAll({
         order: [['id_voz', 'DESC']],

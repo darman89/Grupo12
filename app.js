@@ -23,15 +23,6 @@ const client = new okta.Client({
 
 var audioQueue = new Queue('audio_converter', {redis: {port: process.env.REDIS_PORT, host: `${process.env.REDIS_HOST}`, password:''}});
 
-audioQueue.process( function(job){
-  // call done when finished
-  convertidor.process(job)
-});
-
-audioQueue.on('completed', (job, result) => {
-  console.log(`Job completed with result ` + job.data);
-})
-
 app.set('audioQueue', audioQueue);
 
 // view engine setup

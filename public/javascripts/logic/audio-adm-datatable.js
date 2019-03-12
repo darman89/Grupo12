@@ -1,12 +1,13 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-
+        var users = $('#users_concurso');
         var container = $('#audioModalContainer');
         var table = $('#audio-concursos').DataTable({
             ajax: {
                 url: $('meta[name="referer"]').attr("content"),
                 dataSrc: function (json) {
+                    users.html(json.length +' Participantes');
                     return json;
                 }
             },

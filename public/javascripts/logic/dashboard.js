@@ -22,7 +22,8 @@
                 {data: 'f2'},
                 {data: 'f3'},
                 {data: 'f4'},
-                {data: 'f5'}
+                {data: 'f5'},
+                {data: 'f6'}
             ],
             dom: "<'row'<'col-sm-12 col-md-12 text-center py-4'B>><'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
@@ -63,7 +64,7 @@
                     'class': "fs-13 text-center text-capitalize"
                 },
                 {
-                    'targets': [5],
+                    'targets': [5, 6],
                     'width': "0%",
                     'searchable': false,
                     'visible': false
@@ -108,6 +109,19 @@
                     action: function (e, dt) {
                         e.stopImmediatePropagation();
                         e.preventDefault();
+                        var row = dt.rows({selected: true}).data()[0];
+                        $.ajax({
+                            url: row.f6,
+                            type: 'GET',
+                            success: function (result) {
+                                $.when(container.html(result)).then(function(){
+                                    $('#updateModal').modal('show', true);
+                                    $('#url_evento').trigger('keyup');
+
+                                });
+
+                            }
+                        });
                     }
                 },
                 {

@@ -8,7 +8,7 @@ module.exports = {
         var Mailgun = require('mailgun-js');
 
         var temp_file = crypto.randomBytes(20).toString('hex');
-        var path = '/tmp/'
+        var path = process.env.TEMP_PATH;
         var outStream = fs.createWriteStream(path + temp_file);
 
         var mailgun = new Mailgun({apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});

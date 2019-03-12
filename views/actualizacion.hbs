@@ -1,0 +1,74 @@
+<form id="form-update" action="{{concurso.f8}}" method="post">
+<div id="updateModal" class="modal fade bd-example-modal-lg" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Actualización de Concursos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Por favor ingrese los datos que se solicitan a continuación:</p>
+                    <div class="col-md-12">
+                        <div class="contact-form-area">
+
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="name" placeholder="Nombre del concurso" value="{{concurso.f0}}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="fecha" name="fecha"
+                                               placeholder="Fecha de Inicio - Finalización" value="{{concurso.f1}} - {{concurso.f2}}" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control text-lowercase" maxlength="30"
+                                               id="url_evento" name="url_evento"
+                                               placeholder="Url del Evento (30 caracteres máximo)" value="{{concurso.f5}}" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="valor" value="{{concurso.f3}}" name="valor"
+                                               placeholder="Valor a pagar" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <span id="url" class="form-control">{{concurso.f4}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <textarea name="guion" class="form-control" id="guion" cols="30" rows="10"
+                                                  placeholder="Guión" style="height: 60px;" required>{{concurso.f6}}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <textarea name="recomendaciones" class="form-control" id="recomendaciones" cols="30" rows="10"
+                                                  placeholder="Recomendaciones" style="height: 60px;" required>{{concurso.f7}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="crearevento" type="submit" class="btn btn-primary">Actualizar Concurso</button>
+                    <button id="cancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+                </div>
+            </div>
+    </div>
+</div>
+</form>
+
+<script src="javascripts/logic/actualizacion.js"><{{!}}/script>
