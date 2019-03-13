@@ -140,7 +140,6 @@ router.put('/actualizar/:id', ensureAuth, function (req, res, next) {
                 guion: req.body.guion,
                 recomendaciones: req.body.recomendaciones
             }).then(concurso => {
-                console.log(concurso);
                 return res.send({ message: 'El Concurso ha sido actualizado con éxito!' });
             });
         }
@@ -199,11 +198,11 @@ router.get("/concursos", (req, res) => {
                 f3: concurso.valor,
                 f4: decodeURIComponent(concurso.url_minio),
             });
+	    callback();
         }, err => {
-            if (err)
-                return res.status(400).json({error: 'No se ha podido encontrar datos!'})
+            if (!err)
+                return res.send(concursoData);
         });
-        return res.send(concursoData);
     });
 });
 

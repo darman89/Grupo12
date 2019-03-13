@@ -12,9 +12,10 @@
   "dependencies": {
     "@okta/oidc-middleware": "^1.0.2",
     "@okta/okta-sdk-nodejs": "^1.2.0",
-    "aws-sdk": "^2.419.0",
     "async": "^2.6.1",
+    "aws-sdk": "^2.419.0",
     "bull": "^3.7.0",
+    "compression": "^1.7.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^6.2.0",
