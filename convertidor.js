@@ -1,20 +1,27 @@
 module.exports = {
     process: function (job) {
-        var ffmpeg = require('fluent-ffmpeg');
-        var minio = require('minio');
-        var fs = require('fs');
-        var crypto = require('crypto');
-        var modelos = require("./models");
-        var Mailgun = require('mailgun-js');
+        let ffmpeg = require('fluent-ffmpeg');
+        let nodemailer = require('nodemailer');
+        let aws = require('aws-sdk');
+        let minio = require('minio');
+        let fs = require('fs');
+        let crypto = require('crypto');
+        let modelos = require("./models");
+        let temp_file = crypto.randomBytes(20).toString('hex');
+        let path = process.env.TEMP_PATH;
+        let outStream = fs.createWriteStream(path + temp_file);
 
-        var temp_file = crypto.randomBytes(20).toString('hex');
-        var path = process.env.TEMP_PATH;
-        var outStream = fs.createWriteStream(path + temp_file);
+        aws.config.loadFromPath('config.json');
 
-        var mailgun = new Mailgun({apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
+        function callback(error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Message sent: ' + info.response);
+            }
+        }
 
-
-        var minioClient = new minio.Client({
+        let minioClient = new minio.Client({
             endPoint: `${process.env.MINIO_HOST}`,
             port: Number(process.env.MINIO_PORT),
             useSSL: false,
@@ -68,46 +75,33 @@ module.exports = {
                                     if (!newVoice) {
                                         return console.log('error, no existe el registro de la voz')
                                     } else {
-
                                         newVoice.update({
                                             id_voz_convertida: newAudio.id,
                                             id_estado: 2
                                         }).then(() => {
-                                            var data = {
-                                                //Specify email data
-                                                from: 'Supervoices <supervoices@mgsend.net>',
-                                                //The email to contact
+                                            var mailOptions = {
+                                                from: 'Supervoices <'+process.env.MAIL_FROM+'>',
                                                 to: job.data.email,
-                                                //Subject and text data
                                                 subject: 'Hola desde Supervoices',
-                                                html: 'Hola '+job.data.usuario+'!, tu voz ya está disponible en el concurso  <a href="'+job.data.url_minio+'"><strong>'+job.data.concurso+'</strong></a>'
+                                                text: 'Hola '+job.data.usuario+'!, tu voz ya está disponible en el concurso  <<'+job.data.url_minio+'">>. Por favor copia y pega este link en el navegador: '+job.data.concurso,
+                                                html: 'Hola '+job.data.usuario+'!, tu voz ya está disponible en el concurso  <a href="'+job.data.url_minio+'"><strong>'+job.data.concurso+'</strong></a>',
                                             };
 
-                                            mailgun.messages().send(data, function (err, body) {
-                                                //If there is an error, render the error page
-                                                if (err) {
-                                                    console.log("got an error: ", err);
-                                                }
-                                                //Else we can greet    and leave
-                                                else {
-                                                    //Here "submitted.jade" is the view file for this landing page
-                                                    //We pass the variable "email" from the url parameter in an object rendered by Jade
-                                                    return console.log('Proceso Finalizado');
-                                                }
+                                            // Send e-mail using AWS SES
+                                            mailOptions.subject = 'Hola desde Supervoices';
+                                            var sesTransporter = nodemailer.createTransport({
+                                                SES: new aws.SES({
+                                                    apiVersion: 'latest'
+                                                })
                                             });
-
+                                            sesTransporter.sendMail(mailOptions, callback);
                                         });
                                     }
                                 })
-
                             });
-
-
                         });
                         return console.log(err, etag)
                     });
-
-
                 })
                 .on('error', function (err) {
                     console.log('an error happened: ' + err.message);
@@ -118,9 +112,8 @@ module.exports = {
 
                 })
                 .writeToStream(outStream, {end: true})
-
         });
 
     }
-}
+};
 
