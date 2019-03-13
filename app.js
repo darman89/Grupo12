@@ -10,7 +10,6 @@ var logger = require('morgan');
 var Queue = require('bull');
 
 
-var convertidor = require('./convertidor');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
