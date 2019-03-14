@@ -140,7 +140,6 @@ router.put('/actualizar/:id', ensureAuth, function (req, res, next) {
                 guion: req.body.guion,
                 recomendaciones: req.body.recomendaciones
             }).then(concurso => {
-                console.log(concurso);
                 return res.send({ message: 'El Concurso ha sido actualizado con éxito!' });
             });
         }
