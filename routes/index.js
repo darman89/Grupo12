@@ -199,11 +199,11 @@ router.get("/concursos", (req, res) => {
                 f3: concurso.valor,
                 f4: decodeURIComponent(concurso.url_minio),
             });
+            callback();
         }, err => {
-            if (err)
-                return res.status(400).json({error: 'No se ha podido encontrar datos!'})
+            if (!err)
+                return res.send(concursoData);
         });
-        return res.send(concursoData);
     });
 });
 

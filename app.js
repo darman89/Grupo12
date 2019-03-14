@@ -8,6 +8,7 @@ const { ExpressOIDC } = require('@okta/oidc-middleware');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var Queue = require('bull');
+var compression = require('compression');
 
 
 var indexRouter = require('./routes/index');
@@ -32,6 +33,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
