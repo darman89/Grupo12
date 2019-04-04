@@ -1,9 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Concurso = sequelize.define('Concurso', {
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: sequelize.fn('gen_random_uuid'),
+    },
     id_usuario: DataTypes.STRING,
     nombre: DataTypes.STRING,
-    id_banner: DataTypes.INTEGER,
+    id_banner: DataTypes.UUID,
     url: DataTypes.STRING,
     url_minio: DataTypes.STRING,
     fecha_inicio: DataTypes.DATE,

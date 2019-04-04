@@ -155,7 +155,7 @@ router.post('/concurso/crear', ensureAuth, multer({storage: multer.memoryStorage
             return console.log(error);
         }
         guardarImagen(nombre + ext, req.file.originalname, req.file.size, ext, function (record) {
-            if (record.id > 0) {
+            if (record.id.length > 0) {
                 guardarConcurso(
                     req.userContext.userinfo.sub,
                     req.body.nombre,
@@ -167,7 +167,7 @@ router.post('/concurso/crear', ensureAuth, multer({storage: multer.memoryStorage
                     req.body.guion,
                     req.body.recomendaciones,
                     function (concurso) {
-                        if (concurso.id > 0) {
+                        if (concurso.id.length > 0) {
                             return res.send({message: 'El concurso ha sido creado!'});
                         }
                         return res.status(400).json({error: 'No se ha podido crear el concurso!'})
@@ -325,9 +325,9 @@ router.post('/concurso/audio/:id_concurso', multer({storage: multer.memoryStorag
         }
 
         guardarAudio(nombre + ext, req.file.originalname, req.file.size, ext, function (record) {
-            if (record.id > 0) {
+            if (record.id.length > 0) {
                 guardarVoz(record.id, req.body.email, req.body.nombre, req.body.observacion, function (voz) {
-                    if (voz.id > 0) {
+                    if (voz.id.length > 0) {
                         modelos.Concurso.findOne({
                             where: {
                                 id: req.params.id_concurso,

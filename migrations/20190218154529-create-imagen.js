@@ -1,12 +1,13 @@
+const uuid = require('uuid/v4');
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('Imagenes', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.fn('gen_random_uuid'),
       },
       url_minio: {
         type: Sequelize.STRING
@@ -15,7 +16,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       peso: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       extension: {
         type: Sequelize.STRING

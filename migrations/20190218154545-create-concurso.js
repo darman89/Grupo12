@@ -4,9 +4,9 @@ module.exports = {
     return queryInterface.createTable('Concursos', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.fn('gen_random_uuid'),
       },
       id_usuario: {
         type: Sequelize.STRING
@@ -16,7 +16,7 @@ module.exports = {
       },
       id_banner: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: {
           model: 'Imagenes',

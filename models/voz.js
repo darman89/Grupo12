@@ -1,8 +1,14 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Voz = sequelize.define('Voz', {
-    id_voz_original: DataTypes.INTEGER,
-    id_voz_convertida: DataTypes.INTEGER,
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: sequelize.fn('gen_random_uuid'),
+    },
+    id_voz_original: DataTypes.UUID,
+    id_voz_convertida: DataTypes.UUID,
     email: DataTypes.STRING,
     nombre_completo: DataTypes.STRING,
     fecha_upload: DataTypes.DATE,

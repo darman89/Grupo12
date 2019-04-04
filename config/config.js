@@ -1,10 +1,10 @@
 module.exports = {
   development: {
-    "host": '192.168.99.100',
-    "username": 'postgres',
-    "password": 'postgres',
+    "host": 'localhost',
+    "username": 'root',
+    "password": '',
     "database": 'proyectouno',
-    "port": process.env.DB_PORT,
+    "port": 26257,
     "dialect": "postgres"
   },
   test: {

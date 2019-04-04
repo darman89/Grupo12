@@ -4,13 +4,13 @@ module.exports = {
     return queryInterface.createTable('Voces', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.fn('gen_random_uuid'),
       },
       id_voz_original: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: {
           model: 'ArchivoVoces',
@@ -19,7 +19,7 @@ module.exports = {
       },
       id_voz_convertida: {
         allowNull: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: {
           model: 'ArchivoVoces',

@@ -4,12 +4,13 @@ module.exports = {
     return queryInterface.createTable('ConcursoVoces', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        unique:true,
+        defaultValue: Sequelize.UUIDV4,
+        type: Sequelize.UUID
       },
       id_concurso: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         foreignKey: true,
         references: {
           model: 'Concursos',
@@ -17,7 +18,7 @@ module.exports = {
         }
       },
       id_voz: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         foreignKey: true,
         references: {
           model: 'Voces',
