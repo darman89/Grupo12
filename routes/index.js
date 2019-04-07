@@ -100,7 +100,7 @@ router.get('/actualizar/:id', ensureAuth, function (req, res, next) {
         let concursoData = [];
         if (!concurso) {
             return res.status(400).json({error: 'No se ha encontrado el concurso en la base de datos!'})
-        }else{
+        } else {
             concursoData.push({
                 f0: concurso.nombre,
                 f1: moment(concurso.fecha_inicio).utcOffset('-0500').format('DD/MM/YYYY hh:mm A'),
@@ -125,8 +125,8 @@ router.put('/actualizar/:id', ensureAuth, function (req, res, next) {
         }
     }).then(concurso => {
         if (!concurso) {
-            return res.status(400).json({ error: 'No se ha podido actualizar el evento!' })
-        }else{
+            return res.status(400).json({error: 'No se ha podido actualizar el evento!'})
+        } else {
             concurso.update({
                 id_usuario: req.userContext.userinfo.sub,
                 nombre: req.body.nombre,
@@ -138,7 +138,7 @@ router.put('/actualizar/:id', ensureAuth, function (req, res, next) {
                 guion: req.body.guion,
                 recomendaciones: req.body.recomendaciones
             }).then(concurso => {
-                return res.send({ message: 'El Concurso ha sido actualizado con éxito!' });
+                return res.send({message: 'El Concurso ha sido actualizado con éxito!'});
             });
         }
 
@@ -183,7 +183,7 @@ router.post('/concurso/crear', ensureAuth, multer({storage: multer.memoryStorage
 // Datatable Home
 router.get("/concursos", (req, res) => {
     modelos.Concurso.findAll({
-        order: [['id', 'DESC']],
+        order: [['createdAt', 'DESC']],
         attributes: ['id', 'nombre', 'fecha_inicio', 'fecha_final', 'valor', 'url_minio'],
     }).then(concursos => {
         let concursoData = [];
@@ -207,7 +207,7 @@ router.get("/concursos", (req, res) => {
 // Datatable dashboard
 router.get("/concurso/list", ensureAuth, (req, res) => {
     modelos.Concurso.findAll({
-        order: [['id', 'DESC']],
+        order: [['createdAt', 'DESC']],
         attributes: ['id', 'nombre', 'fecha_inicio', 'fecha_final', 'valor', 'url_minio'],
         where: {
             id_usuario: req.userContext.userinfo.sub,
@@ -340,8 +340,26 @@ router.post('/concurso/audio/:id_concurso', multer({storage: multer.memoryStorag
                             }).then(newConcursoVoces => {
                                 if (newConcursoVoces) {
                                     var audioQueue = req.app.get('audioQueue');
-                                    audioQueue.add({audio: nombre + ext, voz: voz.id, email: voz.email, usuario: voz.nombre_completo, concurso: concurso.nombre, url_minio: decodeURIComponent(concurso.url_minio)});
-                                    return res.status(200).json({message: "Hemos recibido tu voz y la estamos procesando para que sea publicada en la página del concurso y pueda ser posteriormente revisada por nuestro equipo de trabajo. Tan pronto la voz quede publicada en la página del concurso te notificaremos por email"});
+                                    audioQueue.send([
+                                        {
+                                            id: crypto.randomBytes(20).toString('hex'),
+                                            body: "Conversión de Mensaje",
+                                            messageAttributes: {
+                                                audio: { DataType: 'String', StringValue: nombre + ext},
+                                                voz: { DataType: 'String', StringValue: voz.id},
+                                                email: { DataType: 'String', StringValue: voz.email},
+                                                usuario: { DataType: 'String', StringValue: voz.nombre_completo},
+                                                concurso: { DataType: 'String', StringValue: concurso.nombre},
+                                                url_minio: { DataType: 'String', StringValue: decodeURIComponent(concurso.url_minio)}
+                                            }
+                                        }
+                                    ], function (err) {
+                                        if (!err) {
+                                            return res.status(200).json({message: "Hemos recibido tu voz y la estamos procesando para que sea publicada en la página del concurso y pueda ser posteriormente revisada por nuestro equipo de trabajo. Tan pronto la voz quede publicada en la página del concurso te notificaremos por email"});
+                                        }else{
+                                            return res.status(400).json({error: 'No se ha podido subir la voz!'})
+                                        }
+                                    })
                                 } else {
                                     return res.status(400).json({error: 'No se ha podido subir la voz!'})
                                 }
@@ -360,7 +378,7 @@ router.post('/concurso/audio/:id_concurso', multer({storage: multer.memoryStorag
 
 });
 
-// Datatable con voces subidas
+// Datatable con voces subidas (home)
 router.get("/voces/list/:id_concurso", (req, res) => {
     modelos.ConcursoVoces.findAll({
         order: [['id_voz', 'DESC']],
@@ -416,7 +434,7 @@ router.get("/voces/list/:id_concurso", (req, res) => {
 
 // Cargar Audio
 router.get("/voz/audio/:id", (req, res) => {
-    if(req.params.id !== 'null'){
+    if (req.params.id !== 'null') {
         modelos.ArchivoVoz.findOne({
             attributes: ['url_repo'],
             where: {
@@ -433,7 +451,7 @@ router.get("/voz/audio/:id", (req, res) => {
 
             }
         });
-    }else{
+    } else {
         res.render('player_none', {layout: false});
     }
 });
@@ -497,7 +515,7 @@ router.get("/adm/voces/list/:id_concurso", ensureAuth, (req, res) => {
 // Cargar Audio
 router.get("/archivo/audio/:id", (req, res) => {
     modelos.ArchivoVoz.findOne({
-        attributes: ['url_repo','nombre'],
+        attributes: ['url_repo', 'nombre'],
         where: {
             id: req.params.id
         }
@@ -505,10 +523,10 @@ router.get("/archivo/audio/:id", (req, res) => {
         if (!audio) {
             return res.json({error: 'No se ha encontrado el audio en la base de datos!'})
         } else {
-            minioClient.getObject(`${process.env.MINIO_BUCKET_AUDIO_ORIGINAL}`, audio.url_repo, function(err, stream) {
-                if(err){
-                    return res.status(400).json({ msg: 'No encontrado!' })
-                }else{
+            minioClient.getObject(`${process.env.MINIO_BUCKET_AUDIO_ORIGINAL}`, audio.url_repo, function (err, stream) {
+                if (err) {
+                    return res.status(400).json({msg: 'No encontrado!'})
+                } else {
                     res.attachment(audio.nombre);
                     stream.pipe(res, {end: true});
                 }

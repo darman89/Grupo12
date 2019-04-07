@@ -9,7 +9,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var Queue = require('bull');
 var compression = require('compression');
-
+let aws = require('aws-sdk');
+var producer = require('sqs-producer');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -21,7 +22,12 @@ const client = new okta.Client({
   token: process.env.OKTA_TOKEN
 });
 
-var audioQueue = new Queue('audio_converter', {redis: {port: process.env.REDIS_PORT, host: `${process.env.REDIS_HOST}`, password:''}});
+aws.config.loadFromPath('config.json');
+
+var audioQueue = producer.create({
+  queueUrl: 'https://sqs.us-east-2.amazonaws.com/375602021683/audioQueue',
+  region: 'us-east-2'
+});
 
 app.set('audioQueue', audioQueue);
 

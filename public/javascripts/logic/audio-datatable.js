@@ -16,7 +16,7 @@
                 info: true,
                 style: 'single'
             },
-            order: false,
+            order: ['0', 'ASC'],
             columns: [
                 {data: 'f0'},
                 {data: 'f1'},
