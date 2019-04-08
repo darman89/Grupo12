@@ -285,17 +285,14 @@ router.get("/concursos/:slug", (req, res) => {
 
         if (!concurso) {
             return res.json({error: 'No se ha encontrado el concurso en la base de datos!'})
-        }
-
-        minioClient.presignedUrl('GET', `${process.env.MINIO_BUCKET_IMAGE}`, concurso.imagen.url_minio, 60 * 60, function (err, presignedUrl) {
-            if (err) return console.log(err);
+        } else {
             let $user_null = typeof req.userContext === 'undefined';
             res.render('profile', {
                 dashboard: true,
                 referer: $user_null ? req.protocol + '://' + req.get('host') + '/voces/list/' + concurso.id : req.protocol + '://' + req.get('host') + '/adm/voces/list/' + concurso.id,
                 uri: req.protocol + '://' + req.get('host') + '/concurso/audio/' + concurso.id,
                 concurso: concurso,
-                back: presignedUrl,
+                back: `${process.env.CLOUD_FRONT_IMAGES}` + concurso.imagen.url_minio,
                 title: 'Concurso - ' + concurso.nombre,
                 layout: 'concurso',
                 fecha_inicio: moment(concurso.fecha_inicio).utcOffset('-0500').format('DD/MM/YYYY hh:mm A'),
@@ -303,7 +300,8 @@ router.get("/concursos/:slug", (req, res) => {
                 user: req.userContext,
                 admin: !$user_null && req.userContext.userinfo.sub === concurso.id_usuario ? true : false
             });
-        });
+        }
+
     });
 
 });
@@ -345,18 +343,21 @@ router.post('/concurso/audio/:id_concurso', multer({storage: multer.memoryStorag
                                             id: crypto.randomBytes(20).toString('hex'),
                                             body: "Conversión de Mensaje",
                                             messageAttributes: {
-                                                audio: { DataType: 'String', StringValue: nombre + ext},
-                                                voz: { DataType: 'String', StringValue: voz.id},
-                                                email: { DataType: 'String', StringValue: voz.email},
-                                                usuario: { DataType: 'String', StringValue: voz.nombre_completo},
-                                                concurso: { DataType: 'String', StringValue: concurso.nombre},
-                                                url_minio: { DataType: 'String', StringValue: decodeURIComponent(concurso.url_minio)}
+                                                audio: {DataType: 'String', StringValue: nombre + ext},
+                                                voz: {DataType: 'String', StringValue: voz.id},
+                                                email: {DataType: 'String', StringValue: voz.email},
+                                                usuario: {DataType: 'String', StringValue: voz.nombre_completo},
+                                                concurso: {DataType: 'String', StringValue: concurso.nombre},
+                                                url_minio: {
+                                                    DataType: 'String',
+                                                    StringValue: decodeURIComponent(concurso.url_minio)
+                                                }
                                             }
                                         }
                                     ], function (err) {
                                         if (!err) {
                                             return res.status(200).json({message: "Hemos recibido tu voz y la estamos procesando para que sea publicada en la página del concurso y pueda ser posteriormente revisada por nuestro equipo de trabajo. Tan pronto la voz quede publicada en la página del concurso te notificaremos por email"});
-                                        }else{
+                                        } else {
                                             return res.status(400).json({error: 'No se ha podido subir la voz!'})
                                         }
                                     })
@@ -444,11 +445,7 @@ router.get("/voz/audio/:id", (req, res) => {
             if (!audio) {
                 return res.json({error: 'No se ha encontrado el audio en la base de datos!'})
             } else {
-                minioClient.presignedUrl('GET', `${process.env.MINIO_BUCKET_AUDIO_CONVERTIDO}`, audio.url_repo, 60 * 60, function (err, presignedUrl) {
-                    if (err) return console.log(err)
-                    res.render('player', {layout: false, url: presignedUrl});
-                })
-
+                res.render('player', {layout: false, url: `${process.env.CLOUD_FRONT_AUDIOS}` + audio.url_repo});
             }
         });
     } else {

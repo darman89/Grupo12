@@ -4,6 +4,8 @@ var express = require('express');
 var path = require('path');
 const okta = require("@okta/okta-sdk-nodejs");
 const session = require("express-session");
+var RedisStore = require('connect-redis')(session);
+var Redis = require('ioredis');
 const { ExpressOIDC } = require('@okta/oidc-middleware');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -64,7 +66,13 @@ const oidc = new ExpressOIDC({
 app.use(session({
   secret: process.env.APP_SECRET,
   resave: true,
-  saveUninitialized: false
+  saveUninitialized: false,
+  store: new RedisStore({client: new Redis({
+    port: 6379,
+    host: '192.168.99.100',
+    family: 4,
+    db: 0
+  })})
 }));
 
 app.use((req, res, next) => {
