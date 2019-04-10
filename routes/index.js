@@ -533,5 +533,9 @@ router.get("/archivo/audio/:id", (req, res) => {
 
 });
 
+router.get("/ping", (req, res) => {
+    res.send(200);
+});
+
 
 module.exports = router;
