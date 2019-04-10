@@ -1,23 +1,22 @@
-require('dotenv').config()
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
+require('dotenv').config();
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
 const okta = require("@okta/okta-sdk-nodejs");
 const session = require("express-session");
-var RedisStore = require('connect-redis')(session);
-var Redis = require('ioredis');
+const RedisStore = require('connect-redis')(session);
+const Redis = require('ioredis');
 const { ExpressOIDC } = require('@okta/oidc-middleware');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var Queue = require('bull');
-var compression = require('compression');
-let aws = require('aws-sdk');
-var producer = require('sqs-producer');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const compression = require('compression');
+const aws = require('aws-sdk');
+const producer = require('sqs-producer');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
-var app = express();
+const app = express();
 
 const client = new okta.Client({
   orgUrl: process.env.OKTA_ORG_URL,
@@ -26,9 +25,9 @@ const client = new okta.Client({
 
 aws.config.loadFromPath('config.json');
 
-var audioQueue = producer.create({
-  queueUrl: 'https://sqs.us-east-2.amazonaws.com/375602021683/audioQueue',
-  region: 'us-east-2'
+const audioQueue = producer.create({
+  queueUrl: `${process.env.AWS_SQS_URL}`,
+  region: `${process.env.AWS_SQS_REGION}`
 });
 
 app.set('audioQueue', audioQueue);
@@ -44,7 +43,6 @@ app.use(cookieParser());
 
 app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 const oidc = new ExpressOIDC({
   issuer: `${process.env.OKTA_ORG_URL}/oauth2/default`,
@@ -68,8 +66,8 @@ app.use(session({
   resave: true,
   saveUninitialized: false,
   store: new RedisStore({client: new Redis({
-    port: 6379,
-    host: '192.168.99.100',
+    port: process.env.AWS_ELASTIC_PORT,
+    host: `${process.env.AWS_ELASTIC_HOST}`,
     family: 4,
     db: 0
   })})

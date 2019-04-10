@@ -12,7 +12,7 @@ module.exports = {
     "username": 'postgres',
     "password": 'postgres',
     "database": 'proyectouno',
-    "port": process.env.DB_PORT,
+    "port": 26257,
     "dialect": "postgres"
   },
   production: {
@@ -20,7 +20,7 @@ module.exports = {
     "username": 'postgres',
     "password": 'postgres',
     "database": 'proyectouno',
-    "port": process.env.DB_PORT,
+    "port": 26257,
     "dialect": "postgres"
   }
 };
