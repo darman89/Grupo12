@@ -110,7 +110,7 @@ router.get('/actualizar/:id', ensureAuth, function (req, res, next) {
                 f5: concurso.url,
                 f6: concurso.guion,
                 f7: concurso.recomendaciones,
-                f8: req.protocol + '://' + req.get('host') + '/actualizar/' + concurso.id
+                f8: '//' + req.get('host') + '/actualizar/' + concurso.id
             });
             res.render('actualizacion', {layout: false, concurso: concursoData[0]});
         }
@@ -222,8 +222,8 @@ router.get("/concurso/list", ensureAuth, (req, res) => {
                 f2: moment(concurso.fecha_final).utcOffset('-0500').format('DD/MM/YYYY hh:mm A'),
                 f3: concurso.valor,
                 f4: decodeURIComponent(concurso.url_minio),
-                f5: req.protocol + '://' + req.get('host') + '/concurso/' + concurso.id,
-                f6: req.protocol + '://' + req.get('host') + '/actualizar/' + concurso.id
+                f5: '//' + req.get('host') + '/concurso/' + concurso.id,
+                f6: '//' + req.get('host') + '/actualizar/' + concurso.id
             });
             callback();
         }, err => {
@@ -278,7 +278,7 @@ router.get("/concursos/:slug", (req, res) => {
     modelos.Concurso.findOne({
         attributes: ['id', 'id_usuario', 'nombre', 'fecha_inicio', 'fecha_final', 'valor', 'guion', 'recomendaciones'],
         where: {
-            url_minio: encodeURIComponent(req.protocol + '://' + req.get('host') + '/concursos/' + req.params.slug),
+            url_minio: encodeURIComponent('//' + req.get('host') + '/concursos/' + req.params.slug),
         },
         include: ['imagen']
     }).then(concurso => {
@@ -289,8 +289,8 @@ router.get("/concursos/:slug", (req, res) => {
             let $user_null = typeof req.userContext === 'undefined';
             res.render('profile', {
                 dashboard: true,
-                referer: $user_null ? req.protocol + '://' + req.get('host') + '/voces/list/' + concurso.id : req.protocol + '://' + req.get('host') + '/adm/voces/list/' + concurso.id,
-                uri: req.protocol + '://' + req.get('host') + '/concurso/audio/' + concurso.id,
+                referer: $user_null ? '//' + req.get('host') + '/voces/list/' + concurso.id : '//' + req.get('host') + '/adm/voces/list/' + concurso.id,
+                uri: '//' + req.get('host') + '/concurso/audio/' + concurso.id,
                 concurso: concurso,
                 back: `${process.env.CLOUD_FRONT_IMAGES}` + concurso.imagen.url_minio,
                 title: 'Concurso - ' + concurso.nombre,
@@ -422,7 +422,7 @@ router.get("/voces/list/:id_concurso", (req, res) => {
                             f0: moment(voz.fecha_upload).utcOffset('-0500').format('DD/MM/YYYY hh:mm A'),
                             f1: voz.nombre_completo,
                             f2: voz.email,
-                            f3: req.protocol + '://' + req.get('host') + '/voz/audio/' + voz.id_voz_convertida
+                            f3: '//' + req.get('host') + '/voz/audio/' + voz.id_voz_convertida
                         });
                     }
                 });
@@ -497,8 +497,8 @@ router.get("/adm/voces/list/:id_concurso", ensureAuth, (req, res) => {
                             f1: voz.nombre_completo,
                             f2: voz.email,
                             f3: voz['estado.descripcion'],
-                            f4: req.protocol + '://' + req.get('host') + '/voz/audio/' + voz.id_voz_convertida,
-                            f5: req.protocol + '://' + req.get('host') + '/archivo/audio/' + voz.id_voz_original
+                            f4: '//' + req.get('host') + '/voz/audio/' + voz.id_voz_convertida,
+                            f5: '//' + req.get('host') + '/archivo/audio/' + voz.id_voz_original
                         });
                     }
                 });
