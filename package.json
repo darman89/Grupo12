@@ -3,10 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "delete": "docker stop cnv && docker rm cnv",
-    "build": "docker build -t darman890701/node-web-cnv .",
-    "startd": "docker run --name cnv -p 49160:80 -d darman890701/node-web-cnv",
-    "go": "npm run delete && npm run build && npm run startd && docker ps",
     "start": "node ./bin/www"
   },
   "dependencies": {
