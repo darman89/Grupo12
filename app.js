@@ -66,12 +66,7 @@ app.use(session({
   secret: process.env.APP_SECRET,
   resave: true,
   saveUninitialized: false,
-  store: new RedisStore({client: new Redis({
-    port: process.env.AWS_ELASTIC_PORT,
-    host: `${process.env.AWS_ELASTIC_HOST}`,
-    family: 4,
-    db: 15
-  })})
+  store: new RedisStore({client: new Redis(`${process.env.REDIS_URL}`)})
 }));
 
 app.use((req, res, next) => {
