@@ -38,5 +38,8 @@
     "sequelize-cockroachdb": "^1.0.3",
     "sqs-producer": "^1.6.3",
     "uuid": "^3.3.2"
+  },
+  "engines": {
+    "node": "10.14.2"
   }
 }

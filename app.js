@@ -23,7 +23,8 @@ const client = new okta.Client({
   token: process.env.OKTA_TOKEN
 });
 
-aws.config.loadFromPath('config.json');
+//aws.config.loadFromPath('config.json');
+aws.config.region = `${process.env.AWS_SECRET_REGION}`;
 
 const audioQueue = producer.create({
   queueUrl: `${process.env.AWS_SQS_URL}`,
@@ -69,7 +70,7 @@ app.use(session({
     port: process.env.AWS_ELASTIC_PORT,
     host: `${process.env.AWS_ELASTIC_HOST}`,
     family: 4,
-    db: 0
+    db: 15
   })})
 }));
 
