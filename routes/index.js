@@ -278,7 +278,7 @@ router.get("/concursos/:slug", (req, res) => {
     modelos.Concurso.findOne({
         attributes: ['id', 'id_usuario', 'nombre', 'fecha_inicio', 'fecha_final', 'valor', 'guion', 'recomendaciones'],
         where: {
-            url_minio: encodeURIComponent('//' + req.get('host') + '/concursos/' + req.params.slug),
+            url_minio: encodeURIComponent(`${process.env.APP_PROTOCOL}://` + req.get('host') + '/concursos/' + req.params.slug),
         },
         include: ['imagen']
     }).then(concurso => {
