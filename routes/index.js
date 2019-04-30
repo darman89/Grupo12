@@ -286,7 +286,7 @@ router.delete("/concurso/:id", ensureAuth, (req, res) => {
                                                             if (err) {
                                                                 return res.status(400).json({error: 'El concurso se ha eliminido, pero el audio original no se encontró!'})
                                                             } else {
-                                                                minioClient.removeObject(`${process.env.MINIO_BUCKET_AUDIO_ORIGINAL}`, audio['voz_convertida.url_repo'], function (err) {
+                                                                minioClient.removeObject(`${process.env.MINIO_BUCKET_AUDIO_CONVERTIDO}`, audio['voz_convertida.url_repo'], function (err) {
                                                                     if (err) {
                                                                         return res.status(400).json({error: 'El concurso se ha eliminido, pero el audio convertido no se encontró!'})
                                                                     }
