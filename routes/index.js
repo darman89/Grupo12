@@ -253,21 +253,86 @@ router.delete("/concurso/:id", ensureAuth, (req, res) => {
             return res.status(400).json({error: 'No se ha encontrado el concurso en la base de datos!'})
         }
 
-        concurso.destroy().then(rowDeleted => {
-            minioClient.removeObject(`${process.env.MINIO_BUCKET_IMAGE}`, concurso.imagen.url_minio, function (err) {
-                if (err) {
-                    return res.status(400).json({error: 'No se ha podido eliminar el concurso. Ya existen voces cargadas!'})
-                } else {
-                    return res.send({message: 'El concurso ha sido eliminado!'});
-                }
-            })
+        modelos.ConcursoVoces.findAll({
+            attributes: ['id', 'id_concurso', 'id_voz'],
+            where: {
+                id_concurso: req.params.id,
+            },
+            raw: true
+        }).then(voces_concurso => {
+            if (voces_concurso.length !== 0) {
 
-        }, function (err) {
-            if (err)
-                return res.status(400).json({error: 'No se ha podido eliminar el concurso. Ya existen voces cargadas!'})
+                modelos.ConcursoVoces.destroy({ where: { id_concurso: req.params.id }}).then(rowsdeleted => {
+                    if(rowsdeleted){
+                        async.eachSeries(voces_concurso, (voz_concurso, callback) => {
+                            modelos.Voz.findOne({
+                                attributes: ['id', 'id_voz_original', 'id_voz_convertida'],
+                                where: {
+                                    id: voz_concurso.id_voz,
+                                    id_estado: 2
+                                },
+                                include: ['voz_original', 'voz_convertida'],
+                                raw: true
+                            }).then(audio => {
+                                if (audio) {
+                                    modelos.ArchivoVoz.destroy({ where: { id: [audio.id_voz_original, audio.id_voz_convertida]}}).then(rowsdeleted => {
+                                        if(rowsdeleted){
+                                            concurso.destroy().then(() => {
+                                                minioClient.removeObject(`${process.env.MINIO_BUCKET_IMAGE}`, concurso.imagen.url_minio, function (err) {
+                                                    if (err) {
+                                                        return res.status(400).json({error: 'El concurso se ha eliminido, pero la imagen banner no se encontró !'})
+                                                    } else {
+                                                        minioClient.removeObject(`${process.env.MINIO_BUCKET_AUDIO_ORIGINAL}`, audio['voz_original.url_repo'], function (err) {
+                                                            if (err) {
+                                                                return res.status(400).json({error: 'El concurso se ha eliminido, pero el audio original no se encontró!'})
+                                                            } else {
+                                                                minioClient.removeObject(`${process.env.MINIO_BUCKET_AUDIO_ORIGINAL}`, audio['voz_convertida.url_repo'], function (err) {
+                                                                    if (err) {
+                                                                        return res.status(400).json({error: 'El concurso se ha eliminido, pero el audio convertido no se encontró!'})
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                            }, function (err) {
+                                                if (err)
+                                                    return res.status(400).json({error: 'No se ha podido eliminar el concurso. Ya existen voces cargadas!'})
+                                            });
+                                        }else{
+                                            return res.status(400).json({error: 'No se han podido eliminar los audiosregistradas en el concurso!'});
+                                        }
+                                    });
+
+                                }else{
+                                    return res.status(400).json({error: 'No se han podido eliminar las voces registradas!'});
+                                }
+                            });
+                            callback();
+                        }, err => {
+                            if (!err)
+                                return res.send({message: 'El concurso ha sido eliminado!'});
+                        });
+                    }else
+                    {
+                        return res.status(400).json({error: 'No se pudo eliminar El concurso!'})
+                    }
+                });
+            }else{
+                concurso.destroy().then(() => {
+                    minioClient.removeObject(`${process.env.MINIO_BUCKET_IMAGE}`, concurso.imagen.url_minio, function (err) {
+                        if (err) {
+                            return res.status(400).json({error: 'No se ha podido eliminar el concurso. Ya existen voces cargadas!'})
+                        } else {
+                            return res.send({message: 'El concurso ha sido eliminado!'});
+                        }
+                    })
+                }, function (err) {
+                    if (err)
+                        return res.status(400).json({error: 'No se ha podido eliminar el concurso. Ya existen voces cargadas!'})
+                });
+            }
         });
-
-
     });
 });
 
@@ -537,13 +602,13 @@ router.get("/ping", (req, res) => {
     res.send(200);
 });
 
-router.get("/hirefire/"+`${process.env.HIREFIRE_TOKEN}`+'/info', (req, res) => {
+router.get("/hirefire/" + `${process.env.HIREFIRE_TOKEN}` + '/info', (req, res) => {
     let audioQueue = req.app.get('audioQueue');
     audioQueue.queueSize(function (err, size) {
         if (err) {
-            return res.status(400).json([{"error" : "worker", }]);
-        }else{
-            return res.status(200).json([{"name" : "worker", "quantity": size}]);
+            return res.status(400).json([{"error": "worker",}]);
+        } else {
+            return res.status(200).json([{"name": "worker", "quantity": size}]);
         }
     });
 });
